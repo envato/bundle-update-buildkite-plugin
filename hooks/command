@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-image=${BUILDKITE_PLUGIN_BUNDLE_UPDATE_IMAGE:-ruby}
+image=${BUILDKITE_PLUGIN_BUNDLE_UPDATE_IMAGE:-ruby:slim}
 
 echo
 echo "--- :docker: Fetching the latest ${image} image"
