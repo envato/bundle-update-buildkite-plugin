@@ -1,0 +1,9 @@
+name: bundle-update
+description: A Buildkite plugin that runs bundle update
+author: https://github.com/envato
+requirements:
+  - docker
+configuration:
+  properties:
+    image:
+      type: string
