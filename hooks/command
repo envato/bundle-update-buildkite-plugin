@@ -22,7 +22,7 @@ args=(
   "--workdir" "/bundle_update"
 )
 
-docker run "${args[@]}" "${image}" bundle update --jobs=$(nproc)
+docker run "${args[@]}" "${image}" bundle update "--jobs=$(nproc)"
 
 if git diff-index --quiet HEAD -- Gemfile.lock; then
   echo
