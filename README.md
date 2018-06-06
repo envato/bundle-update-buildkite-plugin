@@ -21,7 +21,7 @@ With no options, downloads the latest `ruby:slim` Docker image, starts it up and
 steps:
   - label: ":bundler: Update"
     plugins:
-      envato/bundle-update#v0.1.0: ~
+      envato/bundle-update#v0.2.0: ~
 ```
 
 By specifying a Docker image, you can control which image and hence which version of Ruby and Bundler will be used:
@@ -30,7 +30,7 @@ By specifying a Docker image, you can control which image and hence which versio
 steps:
   - label: ":bundler: Update"
     plugins:
-      envato/bundle-update#v0.1.0:
+      envato/bundle-update#v0.2.0:
         image: "ruby:2.3.7-slim"
 ```
 
