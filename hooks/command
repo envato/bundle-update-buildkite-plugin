@@ -22,6 +22,12 @@ args=(
   "--workdir" "/bundle_update"
 )
 
+while IFS='=' read -r name _ ; do
+  if [[ $name =~ ^BUNDLE_ ]] ; then
+    args+=( "--env" "${name}" )
+  fi
+done < <(env | sort)
+
 docker run "${args[@]}" "${image}" bundle update "--jobs=$(nproc)"
 
 if git diff-index --quiet HEAD -- Gemfile.lock; then

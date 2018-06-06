@@ -4,9 +4,11 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE)
 
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) that lets you
-run `bundle update` on Ruby projects. If bundle update produces changes the
-`bundle-update-plugin-changes: true` key-value pair is added to the build
-metadata. This is helpful for triggering later build steps. See the [git
+run `bundle update` on Ruby projects.
+
+If bundle update produces changes the `bundle-update-plugin-changes: true`
+key-value pair is added to the build metadata. This is helpful for triggering
+later build steps. See the [git
 commit](https://github.com/thedyrt/git-commit-buildkite-plugin) and [github
 pull request](https://github.com/envato/github-pull-request-buildkite-plugin)
 Buildkite plugins for inspiration.
@@ -31,6 +33,14 @@ steps:
       envato/bundle-update#v0.1.0:
         image: "ruby:2.3.7-slim"
 ```
+
+Bundler can be further configured by setting environment variables it
+understands. For instance, if you need to authenticate to access a private
+RubyGems server at https://rubygems.example.com, you can set your credentials in
+an environment variable named `BUNDLE_RUBYGEMS__EXAMPLE__COM`.
+
+(Please use a secure mechanisim for setting private credentials like the
+[AWS S3 Secrets Buildkite Plugin](https://github.com/buildkite/elastic-ci-stack-s3-secrets-hooks#environment-variables).)
 
 ## Configuration
 

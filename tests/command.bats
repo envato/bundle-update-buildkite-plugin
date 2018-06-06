@@ -82,3 +82,26 @@ load '/usr/local/lib/bats/load.bash'
   unstub git
   unstub buildkite-agent
 }
+
+@test "Passes BUNDLE* environment variables" {
+  export BUNDLE_RUBYGEMS__EXAMPLE__COM=secret1
+  export BUNDLE_RUBYGEMS__EXAMPLE__NET=secret2
+  export NOT_AS_BUNDLE_VAR=secret3
+
+  stub nproc ": echo 17"
+  stub docker \
+    "pull ruby:slim : echo pulled image" \
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --workdir /bundle_update --env BUNDLE_RUBYGEMS__EXAMPLE__COM --env BUNDLE_RUBYGEMS__EXAMPLE__NET ruby:slim bundle update --jobs=17 : echo bundle updated"
+  stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
+  stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
+
+  run $PWD/hooks/command
+
+  assert_success
+  assert_output --partial "pulled image"
+  assert_output --partial "bundle updated"
+  unstub nproc
+  unstub docker
+  unstub git
+  unstub buildkite-agent
+}
