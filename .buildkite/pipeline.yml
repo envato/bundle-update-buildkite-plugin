@@ -4,15 +4,15 @@ steps:
 
   - label: ":hammer: Test"
     plugins:
-      docker-compose#v1.3.1:
+      docker-compose#v2.3.0:
         run: tests
     agents:
       queue: "${AGENT_QUEUE}"
 
   - label: ":sparkles: Lint"
     plugins:
-      plugin-linter#v1.0.0:
-        name: envato/bundle-update
+      plugin-linter#v2.0.0:
+        id: envato/bundle-update
     agents:
       queue: "${AGENT_QUEUE}"
 
