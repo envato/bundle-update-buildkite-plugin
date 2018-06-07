@@ -1,4 +1,4 @@
-name: bundle-update
+name: Bundle Update
 description: A Buildkite plugin that runs bundle update
 author: https://github.com/envato
 requirements:
