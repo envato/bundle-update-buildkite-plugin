@@ -7,3 +7,10 @@ configuration:
   properties:
     image:
       type: string
+    update:
+      type: boolean
+  oneOf:
+    - required:
+      - update
+  dependencies:
+    image: [ update ]
