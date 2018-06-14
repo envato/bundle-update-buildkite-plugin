@@ -1,0 +1,30 @@
+#!/bin/bash
+set -euo pipefail
+
+DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+
+# shellcheck source=lib/config.sh
+. "$DIR/../lib/config.sh"
+# shellcheck source=lib/arrays.sh
+. "$DIR/../lib/arrays.sh"
+
+commands=()
+
+[[ -n "$(plugin_read_config UPDATE)" ]] && commands+=("UPDATE")
+
+# Check we've only got one command
+if [[ ${#commands[@]} -gt 1 ]] ; then
+  echo "+++ Bundle Update plugin error"
+  echo "Only one of update. More than one was used."
+  exit 1
+fi
+
+# Dispatch to the command file
+if in_array "UPDATE" "${commands[@]}" ; then
+  # shellcheck source=commands/update.sh
+  . "$DIR/../commands/update.sh"
+else
+  echo "+++ Bundle Update plugin error"
+  echo "No update options were specified"
+  exit 1
+fi

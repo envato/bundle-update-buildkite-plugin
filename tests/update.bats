@@ -9,6 +9,8 @@ load '/usr/local/lib/bats/load.bash'
 # export BUILDKITE_AGENT_STUB_DEBUG=/dev/tty
 
 @test "Runs the bundle update via Docker" {
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
+
   stub nproc ": echo 17"
   stub docker \
     "pull ruby:slim : echo pulled image" \
@@ -28,6 +30,8 @@ load '/usr/local/lib/bats/load.bash'
 }
 
 @test "Sets buildkite metadata when changes are found" {
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
+
   stub nproc ": echo 17"
   stub docker \
     "pull ruby:slim : echo pulled image" \
@@ -46,6 +50,8 @@ load '/usr/local/lib/bats/load.bash'
 }
 
 @test "Does not buildkite metadata when no changes are found" {
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
+
   stub nproc ": echo 17"
   stub docker \
     "pull ruby:slim : echo pulled image" \
@@ -63,6 +69,7 @@ load '/usr/local/lib/bats/load.bash'
 }
 
 @test "Supports the image option" {
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
   export BUILDKITE_PLUGIN_BUNDLE_UPDATE_IMAGE=my-image
 
   stub nproc ": echo 17"
@@ -84,6 +91,7 @@ load '/usr/local/lib/bats/load.bash'
 }
 
 @test "Passes BUNDLE* environment variables" {
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
   export BUNDLE_RUBYGEMS__EXAMPLE__COM=secret1
   export BUNDLE_RUBYGEMS__EXAMPLE__NET=secret2
   export NOT_AS_BUNDLE_VAR=secret3

@@ -22,5 +22,6 @@ steps:
         files:
           - hooks/**
           - commands/**
+          - lib/**
     agents:
       queue: "${AGENT_QUEUE}"
