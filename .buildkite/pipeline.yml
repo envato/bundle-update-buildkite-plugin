@@ -19,6 +19,8 @@ steps:
   - label: ":shell: Shellcheck"
     plugins:
       shellcheck#v1.0.1:
-        files: hooks/**
+        files:
+          - hooks/**
+          - commands/**
     agents:
       queue: "${AGENT_QUEUE}"
