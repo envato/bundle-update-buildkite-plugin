@@ -23,5 +23,6 @@ steps:
           - hooks/**
           - commands/**
           - lib/**
+          - unwrappr/*.sh
     agents:
       queue: "${AGENT_QUEUE}"

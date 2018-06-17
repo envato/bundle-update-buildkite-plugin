@@ -7,10 +7,21 @@ configuration:
   properties:
     image:
       type: string
+    pull-request:
+      type: integer
+      minimum: 1
+    pull-request-metadata-key:
+      type: string
+    repository:
+      type: string
     update:
       type: boolean
   oneOf:
     - required:
+      - annotate
+    - required:
       - update
   dependencies:
     image: [ update ]
+    pull-request: [ annotate ]
+    repository: [ annotate ]

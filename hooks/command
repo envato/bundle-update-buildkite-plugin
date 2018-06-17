@@ -1,30 +1,36 @@
 #!/bin/bash
 set -euo pipefail
 
-DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
+PLUGIN_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)/.."
 
 # shellcheck source=lib/config.sh
-. "$DIR/../lib/config.sh"
+. "$PLUGIN_DIR/lib/config.sh"
 # shellcheck source=lib/arrays.sh
-. "$DIR/../lib/arrays.sh"
+. "$PLUGIN_DIR/lib/arrays.sh"
+# shellcheck source=lib/git.sh
+. "$PLUGIN_DIR/lib/git.sh"
 
 commands=('')
 
 [[ -n "$(plugin_read_config UPDATE)" ]] && commands+=("UPDATE")
+[[ -n "$(plugin_read_config ANNOTATE)" ]] && commands+=("ANNOTATE")
 
 # Check we've only got one command
 if [[ ${#commands[@]} -gt 2 ]] ; then
   echo "+++ Bundle Update plugin error"
-  echo "Only one of update. More than one was used."
+  echo "Only one of update or annotate. More than one was used."
   exit 1
 fi
 
 # Dispatch to the command file
 if in_array "UPDATE" "${commands[@]}" ; then
   # shellcheck source=commands/update.sh
-  . "$DIR/../commands/update.sh"
+  . "$PLUGIN_DIR/commands/update.sh"
+elif in_array "ANNOTATE" "${commands[@]}" ; then
+  # shellcheck source=commands/annotate.sh
+  . "$PLUGIN_DIR/commands/annotate.sh"
 else
   echo "+++ Bundle Update plugin error"
-  echo "No update options were specified"
+  echo "No update or annotate options were specified"
   exit 1
 fi
