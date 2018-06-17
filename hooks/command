@@ -8,12 +8,12 @@ DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
 # shellcheck source=lib/arrays.sh
 . "$DIR/../lib/arrays.sh"
 
-commands=()
+commands=('')
 
 [[ -n "$(plugin_read_config UPDATE)" ]] && commands+=("UPDATE")
 
 # Check we've only got one command
-if [[ ${#commands[@]} -gt 1 ]] ; then
+if [[ ${#commands[@]} -gt 2 ]] ; then
   echo "+++ Bundle Update plugin error"
   echo "Only one of update. More than one was used."
   exit 1
