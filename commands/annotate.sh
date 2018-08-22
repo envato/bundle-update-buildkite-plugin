@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 repository=$(plugin_read_config REPOSITORY "$(repo_from_origin)")
