@@ -4,7 +4,11 @@ set -euo pipefail
 echo
 echo "--- :bundler: Installing Unwrappr"
 echo
-bundle install --path .bundle --jobs="$(nproc)"
+cat <<\GEMS > Gemfile
+source 'https://rubygems.org/'
+gem 'unwrappr', source: 'https://rubygems.envato.net/'
+GEMS
+bundle install --jobs="$(nproc)"
 
 echo
 echo "+++ :github: Annotating Github pull request"
