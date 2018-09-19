@@ -23,7 +23,7 @@ args=(
   "--interactive"
   "--tty"
   "--rm"
-  "--volume" "$PLUGIN_DIR/unwrappr:/annotate"
+  "--volume" "$PLUGIN_DIR/unwrappr:/unwrappr"
   "--workdir" "/annotate"
   "--env" "GITHUB_TOKEN"
 )
@@ -36,4 +36,4 @@ while IFS='=' read -r name _ ; do
   fi
 done < <(env | sort)
 
-docker run "${args[@]}" "${image}" script/annotate.sh "${repository}" "${pull_request}"
+docker run "${args[@]}" "${image}" /unwrappr/annotate.sh "${repository}" "${pull_request}"

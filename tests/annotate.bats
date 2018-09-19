@@ -14,7 +14,7 @@ load '/usr/local/lib/bats/load.bash'
 
   stub docker \
     "pull ruby : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin/hooks/../unwrappr:/annotate --workdir /annotate --env GITHUB_TOKEN ruby script/annotate.sh envato/ruby-service 42 : echo pull request annotated"
+    "run --interactive --tty --rm --volume /plugin/hooks/../unwrappr:/unwrappr --workdir /annotate --env GITHUB_TOKEN ruby /unwrappr/annotate.sh envato/ruby-service 42 : echo pull request annotated"
   stub git 'remote get-url origin : echo "git@github.com:owner/project"'
 
   run $PWD/hooks/command
@@ -32,7 +32,7 @@ load '/usr/local/lib/bats/load.bash'
 
   stub docker \
     "pull ruby : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin/hooks/../unwrappr:/annotate --workdir /annotate --env GITHUB_TOKEN ruby script/annotate.sh owner/project 42 : echo pull request annotated"
+    "run --interactive --tty --rm --volume /plugin/hooks/../unwrappr:/unwrappr --workdir /annotate --env GITHUB_TOKEN ruby /unwrappr/annotate.sh owner/project 42 : echo pull request annotated"
   stub git 'remote get-url origin : echo "git@github.com:owner/project"'
 
   run $PWD/hooks/command
@@ -55,7 +55,7 @@ load '/usr/local/lib/bats/load.bash'
 
   stub docker \
     "pull ruby : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin/hooks/../unwrappr:/annotate --workdir /annotate --env GITHUB_TOKEN --env BUNDLE_RUBYGEMS__EXAMPLE__COM --env BUNDLE_RUBYGEMS__EXAMPLE__NET ruby script/annotate.sh envato/ruby-service 42 : echo pull request annotated"
+    "run --interactive --tty --rm --volume /plugin/hooks/../unwrappr:/unwrappr --workdir /annotate --env GITHUB_TOKEN --env BUNDLE_RUBYGEMS__EXAMPLE__COM --env BUNDLE_RUBYGEMS__EXAMPLE__NET ruby /unwrappr/annotate.sh envato/ruby-service 42 : echo pull request annotated"
   stub git 'remote get-url origin : echo "git@github.com:owner/project"'
 
   run $PWD/hooks/command
@@ -74,7 +74,7 @@ load '/usr/local/lib/bats/load.bash'
 
   stub docker \
     "pull ruby : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin/hooks/../unwrappr:/annotate --workdir /annotate --env GITHUB_TOKEN ruby script/annotate.sh envato/ruby-service 232 : echo pull request annotated"
+    "run --interactive --tty --rm --volume /plugin/hooks/../unwrappr:/unwrappr --workdir /annotate --env GITHUB_TOKEN ruby /unwrappr/annotate.sh envato/ruby-service 232 : echo pull request annotated"
   stub git 'remote get-url origin : echo "git@github.com:owner/project"'
   stub buildkite-agent "meta-data get pull-request : echo 232"
 
