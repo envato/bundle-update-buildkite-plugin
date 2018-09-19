@@ -21,7 +21,8 @@ With no options, downloads the latest `ruby:slim` Docker image, starts it up and
 steps:
   - label: ":bundler: Update"
     plugins:
-      envato/bundle-update#v0.2.0: ~
+      envato/bundle-update#v0.3.0:
+        update: true
 ```
 
 By specifying a Docker image, you can control which image and hence which version of Ruby and Bundler will be used:
@@ -30,7 +31,8 @@ By specifying a Docker image, you can control which image and hence which versio
 steps:
   - label: ":bundler: Update"
     plugins:
-      envato/bundle-update#v0.2.0:
+      envato/bundle-update#v0.3.0:
+        update: true
         image: "ruby:2.3.7-slim"
 ```
 
@@ -42,9 +44,14 @@ an environment variable named `BUNDLE_RUBYGEMS__EXAMPLE__COM`.
 (Please use a secure mechanisim for setting private credentials like the
 [AWS S3 Secrets Buildkite Plugin](https://github.com/buildkite/elastic-ci-stack-s3-secrets-hooks#environment-variables).)
 
+
 ## Configuration
 
-### `image` (optional)
+### `update`
+
+Instruct the plugin to run `bundle update` on the project.
+
+### `image` (optional, update only)
 
 The Docker image to use. Checkout the [official Ruby
 builds](https://hub.docker.com/_/ruby/) at Docker Hub or build your own.

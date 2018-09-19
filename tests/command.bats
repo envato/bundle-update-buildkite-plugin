@@ -8,100 +8,29 @@ load '/usr/local/lib/bats/load.bash'
 # export GIT_STUB_DEBUG=/dev/tty
 # export BUILDKITE_AGENT_STUB_DEBUG=/dev/tty
 
-@test "Runs the bundle update via Docker" {
-  stub nproc ": echo 17"
-  stub docker \
-    "pull ruby:slim : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --workdir /bundle_update ruby:slim bundle update --jobs=17 : echo bundle updated"
-  stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
-  stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
+@test "Errors out when update and annotate parameter not provided" {
+  stub nproc
+  stub docker
+  stub git
+  stub buildkite-agent
 
   run $PWD/hooks/command
 
-  assert_success
-  assert_output --partial "pulled image"
-  assert_output --partial "bundle updated"
-  unstub nproc
-  unstub docker
-  unstub git
-  unstub buildkite-agent
+  assert_failure
+  assert_output --partial "No update or annotate options were specified"
 }
 
-@test "Sets buildkite metadata when changes are found" {
-  stub nproc ": echo 17"
-  stub docker \
-    "pull ruby:slim : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --workdir /bundle_update ruby:slim bundle update --jobs=17 : echo bundle updated"
-  stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
-  stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
+@test "Errors out when both update and annotate parameter are provided" {
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_ANNOTATE=true
+
+  stub nproc
+  stub docker
+  stub git
+  stub buildkite-agent
 
   run $PWD/hooks/command
 
-  assert_success
-  assert_output --partial "meta-data set"
-  unstub nproc
-  unstub docker
-  unstub git
-  unstub buildkite-agent
-}
-
-@test "Does not buildkite metadata when no changes are found" {
-  stub nproc ": echo 17"
-  stub docker \
-    "pull ruby:slim : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --workdir /bundle_update ruby:slim bundle update --jobs=17 : echo bundle updated"
-  stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 0"
-  stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
-
-  run $PWD/hooks/command
-
-  assert_success
-  refute_output --partial "meta-data set"
-  unstub nproc
-  unstub docker
-  unstub git
-}
-
-@test "Supports the image option" {
-  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_IMAGE=my-image
-
-  stub nproc ": echo 17"
-  stub docker \
-    "pull my-image : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --workdir /bundle_update my-image bundle update --jobs=17 : echo bundle updated"
-  stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
-  stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
-
-  run $PWD/hooks/command
-
-  assert_success
-  assert_output --partial "pulled image"
-  assert_output --partial "bundle updated"
-  unstub nproc
-  unstub docker
-  unstub git
-  unstub buildkite-agent
-}
-
-@test "Passes BUNDLE* environment variables" {
-  export BUNDLE_RUBYGEMS__EXAMPLE__COM=secret1
-  export BUNDLE_RUBYGEMS__EXAMPLE__NET=secret2
-  export NOT_AS_BUNDLE_VAR=secret3
-
-  stub nproc ": echo 17"
-  stub docker \
-    "pull ruby:slim : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --workdir /bundle_update --env BUNDLE_RUBYGEMS__EXAMPLE__COM --env BUNDLE_RUBYGEMS__EXAMPLE__NET ruby:slim bundle update --jobs=17 : echo bundle updated"
-  stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
-  stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
-
-  run $PWD/hooks/command
-
-  assert_success
-  assert_output --partial "pulled image"
-  assert_output --partial "bundle updated"
-  unstub nproc
-  unstub docker
-  unstub git
-  unstub buildkite-agent
+  assert_failure
+  assert_output --partial "Only one of update or annotate. More than one was used."
 }

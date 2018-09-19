@@ -1,37 +1,36 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-image=${BUILDKITE_PLUGIN_BUNDLE_UPDATE_IMAGE:-ruby:slim}
+PLUGIN_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)/.."
 
-echo
-echo "--- :docker: Fetching the latest ${image} image"
-echo
+# shellcheck source=lib/config.sh
+. "$PLUGIN_DIR/lib/config.sh"
+# shellcheck source=lib/arrays.sh
+. "$PLUGIN_DIR/lib/arrays.sh"
+# shellcheck source=lib/git.sh
+. "$PLUGIN_DIR/lib/git.sh"
 
-docker pull "${image}"
+commands=('')
 
-echo
-echo "+++ :bundler: Running bundle update"
-echo
+[[ -n "$(plugin_read_config UPDATE)" ]] && commands+=("UPDATE")
+[[ -n "$(plugin_read_config ANNOTATE)" ]] && commands+=("ANNOTATE")
 
-args=(
-  "--interactive"
-  "--tty"
-  "--rm"
-  "--volume" "$PWD:/bundle_update"
-  "--workdir" "/bundle_update"
-)
+# Check we've only got one command
+if [[ ${#commands[@]} -gt 2 ]] ; then
+  echo "+++ Bundle Update plugin error"
+  echo "Only one of update or annotate. More than one was used."
+  exit 1
+fi
 
-while IFS='=' read -r name _ ; do
-  if [[ $name =~ ^BUNDLE_ ]] ; then
-    args+=( "--env" "${name}" )
-  fi
-done < <(env | sort)
-
-docker run "${args[@]}" "${image}" bundle update "--jobs=$(nproc)"
-
-if git diff-index --quiet HEAD -- Gemfile.lock; then
-  echo
-  echo "No updates"
+# Dispatch to the command file
+if in_array "UPDATE" "${commands[@]}" ; then
+  # shellcheck source=commands/update.sh
+  . "$PLUGIN_DIR/commands/update.sh"
+elif in_array "ANNOTATE" "${commands[@]}" ; then
+  # shellcheck source=commands/annotate.sh
+  . "$PLUGIN_DIR/commands/annotate.sh"
 else
-  buildkite-agent meta-data set bundle-update-plugin-changes true
+  echo "+++ Bundle Update plugin error"
+  echo "No update or annotate options were specified"
+  exit 1
 fi
