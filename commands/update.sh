@@ -18,7 +18,9 @@ args=(
   "--tty"
   "--rm"
   "--volume" "$PWD:/bundle_update"
+  "--volume" "$PLUGIN_DIR/update:/update"
   "--workdir" "/bundle_update"
+  "--env" "BUNDLE_APP_CONFIG=/bundle_app_config"
 )
 
 while IFS='=' read -r name _ ; do
@@ -27,7 +29,7 @@ while IFS='=' read -r name _ ; do
   fi
 done < <(env | sort)
 
-docker run "${args[@]}" "${image}" bundle update "--jobs=$(nproc)"
+docker run "${args[@]}" "${image}" /update/update.sh
 
 if git diff-index --quiet HEAD -- Gemfile.lock; then
   echo

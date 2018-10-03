@@ -3,7 +3,6 @@
 load '/usr/local/lib/bats/load.bash'
 
 # Uncomment the following to get more detail on failures of stubs
-# export NPROC_STUB_DEBUG=/dev/tty
 # export DOCKER_STUB_DEBUG=/dev/tty
 # export GIT_STUB_DEBUG=/dev/tty
 # export BUILDKITE_AGENT_STUB_DEBUG=/dev/tty
@@ -11,10 +10,9 @@ load '/usr/local/lib/bats/load.bash'
 @test "Runs the bundle update via Docker" {
   export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
 
-  stub nproc ": echo 17"
   stub docker \
     "pull ruby:slim : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --workdir /bundle_update ruby:slim bundle update --jobs=17 : echo bundle updated"
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config ruby:slim /update/update.sh : echo bundle updated"
   stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
   stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
 
@@ -23,7 +21,6 @@ load '/usr/local/lib/bats/load.bash'
   assert_success
   assert_output --partial "pulled image"
   assert_output --partial "bundle updated"
-  unstub nproc
   unstub docker
   unstub git
   unstub buildkite-agent
@@ -32,10 +29,9 @@ load '/usr/local/lib/bats/load.bash'
 @test "Sets buildkite metadata when changes are found" {
   export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
 
-  stub nproc ": echo 17"
   stub docker \
     "pull ruby:slim : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --workdir /bundle_update ruby:slim bundle update --jobs=17 : echo bundle updated"
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config ruby:slim /update/update.sh : echo bundle updated"
   stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
   stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
 
@@ -43,7 +39,6 @@ load '/usr/local/lib/bats/load.bash'
 
   assert_success
   assert_output --partial "meta-data set"
-  unstub nproc
   unstub docker
   unstub git
   unstub buildkite-agent
@@ -52,10 +47,9 @@ load '/usr/local/lib/bats/load.bash'
 @test "Does not buildkite metadata when no changes are found" {
   export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
 
-  stub nproc ": echo 17"
   stub docker \
     "pull ruby:slim : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --workdir /bundle_update ruby:slim bundle update --jobs=17 : echo bundle updated"
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config ruby:slim /update/update.sh : echo bundle updated"
   stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 0"
   stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
 
@@ -63,7 +57,6 @@ load '/usr/local/lib/bats/load.bash'
 
   assert_success
   refute_output --partial "meta-data set"
-  unstub nproc
   unstub docker
   unstub git
 }
@@ -72,10 +65,9 @@ load '/usr/local/lib/bats/load.bash'
   export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
   export BUILDKITE_PLUGIN_BUNDLE_UPDATE_IMAGE=my-image
 
-  stub nproc ": echo 17"
   stub docker \
     "pull my-image : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --workdir /bundle_update my-image bundle update --jobs=17 : echo bundle updated"
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config my-image /update/update.sh : echo bundle updated"
   stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
   stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
 
@@ -84,7 +76,6 @@ load '/usr/local/lib/bats/load.bash'
   assert_success
   assert_output --partial "pulled image"
   assert_output --partial "bundle updated"
-  unstub nproc
   unstub docker
   unstub git
   unstub buildkite-agent
@@ -96,10 +87,9 @@ load '/usr/local/lib/bats/load.bash'
   export BUNDLE_RUBYGEMS__EXAMPLE__NET=secret2
   export NOT_AS_BUNDLE_VAR=secret3
 
-  stub nproc ": echo 17"
   stub docker \
     "pull ruby:slim : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --workdir /bundle_update --env BUNDLE_RUBYGEMS__EXAMPLE__COM --env BUNDLE_RUBYGEMS__EXAMPLE__NET ruby:slim bundle update --jobs=17 : echo bundle updated"
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config --env BUNDLE_RUBYGEMS__EXAMPLE__COM --env BUNDLE_RUBYGEMS__EXAMPLE__NET ruby:slim /update/update.sh : echo bundle updated"
   stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
   stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
 
@@ -108,7 +98,6 @@ load '/usr/local/lib/bats/load.bash'
   assert_success
   assert_output --partial "pulled image"
   assert_output --partial "bundle updated"
-  unstub nproc
   unstub docker
   unstub git
   unstub buildkite-agent
