@@ -4,7 +4,7 @@ set -euo pipefail
 echo "--- :bundler: Installing Unwrappr"
 cat <<\GEMS > Gemfile
 source 'https://rubygems.org/'
-gem 'unwrappr', source: 'https://rubygems.envato.net/'
+gem 'unwrappr'
 GEMS
 bundle install --jobs="$(nproc)"
 
