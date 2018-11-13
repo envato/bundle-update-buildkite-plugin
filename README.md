@@ -21,8 +21,8 @@ With no options, downloads the latest `ruby:slim` Docker image, starts it up and
 steps:
   - label: ":bundler: Update"
     plugins:
-      envato/bundle-update#v0.4.0:
-        update: true
+      - envato/bundle-update#v0.4.0:
+          update: true
 ```
 
 By specifying a Docker image, you can control which image and hence which version of Ruby and Bundler will be used:
@@ -31,9 +31,9 @@ By specifying a Docker image, you can control which image and hence which versio
 steps:
   - label: ":bundler: Update"
     plugins:
-      envato/bundle-update#v0.4.0:
-        update: true
-        image: "ruby:2.3.7-slim"
+      - envato/bundle-update#v0.4.0:
+          update: true
+          image: "ruby:2.3.7-slim"
 ```
 
 Bundler can be further configured by setting environment variables it
