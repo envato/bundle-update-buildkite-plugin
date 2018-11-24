@@ -9,16 +9,10 @@ if [[ -z "${pull_request}" ]]; then
 fi
 image=ruby
 
-echo
 echo "--- :docker: Fetching the latest ${image} image"
-echo
-
 docker pull "${image}"
 
-echo
 echo "--- :docker: Launching ${image} image"
-echo
-
 args=(
   "--interactive"
   "--tty"
@@ -27,13 +21,10 @@ args=(
   "--workdir" "/annotate"
   "--env" "GITHUB_TOKEN"
 )
-
-# Pass to the Docker container all environment variables that begin with
-# 'BUNDLE_'
+# Pass to the Docker container all environment variables that begin with 'BUNDLE_'
 while IFS='=' read -r name _ ; do
   if [[ $name =~ ^BUNDLE_ ]] ; then
     args+=( "--env" "${name}" )
   fi
 done < <(env | sort)
-
 docker run "${args[@]}" "${image}" /unwrappr/annotate.sh "${repository}" "${pull_request}"

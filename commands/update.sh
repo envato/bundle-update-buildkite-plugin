@@ -3,16 +3,10 @@ set -euo pipefail
 
 image=${BUILDKITE_PLUGIN_BUNDLE_UPDATE_IMAGE:-ruby:slim}
 
-echo
 echo "--- :docker: Fetching the latest ${image} image"
-echo
-
 docker pull "${image}"
 
-echo
 echo "+++ :bundler: Running bundle update"
-echo
-
 args=(
   "--interactive"
   "--tty"
@@ -22,13 +16,11 @@ args=(
   "--workdir" "/bundle_update"
   "--env" "BUNDLE_APP_CONFIG=/bundle_app_config"
 )
-
 while IFS='=' read -r name _ ; do
   if [[ $name =~ ^BUNDLE_ ]] ; then
     args+=( "--env" "${name}" )
   fi
 done < <(env | sort)
-
 docker run "${args[@]}" "${image}" /update/update.sh
 
 if git diff-index --quiet HEAD -- Gemfile.lock; then
