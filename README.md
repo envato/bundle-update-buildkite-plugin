@@ -21,8 +21,7 @@ steps:
 By itself this function is quite useless, the resulting changes to the
 `Gemfile.lock` will simply sit in the Buildkite working directory. What we
 really want is for the changes to be committed back to the repository. For this
-we can make use of the [Git Commit](https://github.com/thedyrt/git-commit-buildkite-plugin)
-Buildkite plugin.
+we can make use of the [Git Commit Buildkite Plugin].
 
 ```yml
 steps:
@@ -39,9 +38,8 @@ steps:
             email: "bundle-update-bot@example.com"
 ```
 
-One could then use the [Github Pull Request](https://github.com/envato/github-pull-request-buildkite-plugin)
-Buildkite plugin to a create pull request with these changes (if your project
-codebase is hosted on Github):
+One could then use the [Github Pull Request Buildkite Plugin] to a create pull
+request with these changes (if your project codebase is hosted on Github):
 
 ```yml
   - label: ":github: Open Pull Request"
@@ -72,12 +70,56 @@ understands. For instance, if you need to authenticate to access a private
 RubyGems server at https://rubygems.example.com, you can set your credentials in
 an environment variable named `BUNDLE_RUBYGEMS__EXAMPLE__COM`. (Please use a
 secure mechanisim for setting private environment variables. For instance, the
-[AWS S3 Secrets Buildkite Plugin](https://github.com/buildkite/elastic-ci-stack-s3-secrets-hooks#environment-variables).)
+[AWS S3 Secrets Buildkite Plugin].)
 
 If bundle update produces changes to `Gemfile.lock` files, the
 `bundle-update-plugin-changes: true` key-value pair is added to the build
 metadata. This is helpful for triggering or cancelling later steps in the
 pipeline.
+
+## Annotate
+
+Add comments to each gem change to a `Gemfile.lock` file in a Github pull
+request. These comments provide some context and are helpful to engineers when
+determining if the change in version is safe.
+
+This feature is implemented using the [unwrappr] library.
+
+```yml
+steps:
+  - label: ":rubygems: Annotate Gem Changes"
+    plugins:
+      - envato/bundle-update#v0.4.0:
+          annotate: true
+          pull-request: 42
+```
+
+By default the plugin uses the repository from the Buildkite pipeline
+configuration. However, this can be overridden by specifying the Github
+repository:
+
+```yml
+steps:
+  - label: ":rubygems: Annotate Gem Changes"
+    plugins:
+      - envato/bundle-update#v0.4.0:
+          annotate: true
+          pull-request: 42
+          repository: "owner/project"
+```
+
+The pull request number can also be loaded from the build metadata. For instance,
+the [Github Pull Request Buildkite Plugin] saves the PR number with the key
+`github-pull-request-plugin-number` so it can be loaded like so:
+
+```yml
+steps:
+  - label: ":rubygems: Annotate Gem Changes"
+    plugins:
+      - envato/bundle-update#v0.4.0:
+          annotate: true
+          pull-request-metadata-key: "github-pull-request-plugin-number"
+```
 
 ## Configuration
 
@@ -92,6 +134,27 @@ builds](https://hub.docker.com/_/ruby/) at Docker Hub or build your own.
 
 Default: `ruby:slim`
 
+### `annotate`
+
+Instruct the plugin to run annotate `Gemfile.lock` gem changes in a Github pull
+request.
+
+### `pull-request` (optional, annotate only)
+
+The number of the Github pull request to annotate. This or
+`pull-request-metadata-key` needs to be provided for the `annotate` function.
+
+### `pull-request-metadata-key` (optional, annotate only)
+
+The Buildkite metadata key to the Github pull request number. This or
+`pull-request` needs to be provided for the `annotate` function.
+
+### `repository` (optional, annotate only)
+
+The Github repository.
+
+Default: pipeline configured repository
+
 ## Development
 
 To run the tests:
@@ -105,3 +168,8 @@ To run the [Buildkite Plugin Linter](https://github.com/buildkite-plugins/buildk
 ```sh
 docker-compose run --rm lint
 ```
+
+[unwrappr]: https://github.com/envato/unwrappr
+[Git Commit Buildkite Plugin]: https://github.com/thedyrt/git-commit-buildkite-plugin
+[Github Pull Request Buildkite Plugin]: https://github.com/envato/github-pull-request-buildkite-plugin
+[AWS S3 Secrets Buildkite Plugin]: https://github.com/buildkite/elastic-ci-stack-s3-secrets-hooks#environment-variables
