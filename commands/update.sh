@@ -24,8 +24,8 @@ done < <(env | sort)
 docker run "${args[@]}" "${image}" /update/update.sh
 
 if git diff-index --quiet HEAD -- Gemfile.lock; then
-  echo
   echo "No updates"
+  buildkite-agent annotate ":bundler: No gem updates found." --style info
 else
   buildkite-agent meta-data set bundle-update-plugin-changes true
 fi

@@ -44,21 +44,22 @@ load '/usr/local/lib/bats/load.bash'
   unstub buildkite-agent
 }
 
-@test "Does not buildkite metadata when no changes are found" {
+@test "Adds buildkite annotation, but no metadata, when no changes are found" {
   export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
 
   stub docker \
     "pull ruby:slim : echo pulled image" \
     "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config ruby:slim /update/update.sh : echo bundle updated"
   stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 0"
-  stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
+  stub buildkite-agent "annotate ':bundler: No gem updates found.' --style info : echo buildkite-annotation-added"
 
   run $PWD/hooks/command
 
   assert_success
-  refute_output --partial "meta-data set"
+  assert_output --partial "buildkite-annotation-added"
   unstub docker
   unstub git
+  unstub buildkite-agent
 }
 
 @test "Supports the image option" {
