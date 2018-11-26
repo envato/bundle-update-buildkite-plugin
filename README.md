@@ -14,7 +14,7 @@ This function runs `bundle update` from within a Docker container.
 steps:
   - label: ":bundler: Update"
     plugins:
-      - envato/bundle-update#v0.5.0:
+      - envato/bundle-update#v0.6.0:
           update: true
 ```
 
@@ -27,7 +27,7 @@ we can make use of the [Git Commit Buildkite Plugin].
 steps:
   - label: ":bundler: Update"
     plugins:
-      - envato/bundle-update#v0.5.0:
+      - envato/bundle-update#v0.6.0:
           update: true
       - thedyrt/git-commit#v0.3.0:
           branch: "bundle-update/${BUILDKITE_BUILD_NUMBER}"
@@ -60,7 +60,7 @@ constraints also.
 steps:
   - label: ":bundler: Update"
     plugins:
-      - envato/bundle-update#v0.5.0:
+      - envato/bundle-update#v0.6.0:
           update: true
           image: "ruby:2.3.7-slim"
 ```
@@ -89,7 +89,7 @@ This feature is implemented using the [unwrappr] library.
 steps:
   - label: ":rubygems: Annotate Gem Changes"
     plugins:
-      - envato/bundle-update#v0.5.0:
+      - envato/bundle-update#v0.6.0:
           annotate: true
           pull-request: 42
 ```
@@ -102,7 +102,7 @@ repository:
 steps:
   - label: ":rubygems: Annotate Gem Changes"
     plugins:
-      - envato/bundle-update#v0.5.0:
+      - envato/bundle-update#v0.6.0:
           annotate: true
           pull-request: 42
           repository: "owner/project"
@@ -116,7 +116,7 @@ the [Github Pull Request Buildkite Plugin] saves the PR number with the key
 steps:
   - label: ":rubygems: Annotate Gem Changes"
     plugins:
-      - envato/bundle-update#v0.5.0:
+      - envato/bundle-update#v0.6.0:
           annotate: true
           pull-request-metadata-key: "github-pull-request-plugin-number"
 ```
