@@ -252,4 +252,4 @@ docker-compose run --rm lint
 [unwrappr]: https://github.com/envato/unwrappr
 [Git Commit Buildkite Plugin]: https://github.com/thedyrt/git-commit-buildkite-plugin
 [Github Pull Request Buildkite Plugin]: https://github.com/envato/github-pull-request-buildkite-plugin
-[AWS S3 Secrets Buildkite Plugin]: https://github.com/buildkite/elastic-ci-stack-s3-secrets-hooks#environment-variables
+[AWS S3 Secrets Buildkite Plugin]: https://github.com/buildkite/elastic-ci-stack-s3-secrets-hooks#uploading-secrets
