@@ -65,6 +65,22 @@ steps:
           image: "ruby:2.3.7-slim"
 ```
 
+If the main build produces a Docker image artifact, it may be easiest to use that
+to run the bundle update, as it'll have all the compile-time dependencies
+installed. Here's an example obtaining the image from Amazon ECR:
+
+```yml
+steps:
+  - label: ":bundler: Update"
+    plugins:
+      - ecr#v1.1.4:
+          login: true
+          account_ids: 100000000000
+      - envato/bundle-update#v0.6.0:
+          update: true
+          image: "100000000000.dkr.ecr.us-east-1.amazonaws.com/my-service:latest"
+```
+
 Bundler can be further configured by setting environment variables it
 understands. For instance, if you need to authenticate to access a private
 RubyGems server at https://rubygems.example.com, you can set your credentials in
