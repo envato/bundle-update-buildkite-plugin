@@ -50,7 +50,7 @@ request with these changes (if your project codebase is hosted on Github):
           body: "[Bundle update #${BUILDKITE_BUILD_NUMBER}](${BUILDKITE_BUILD_URL})"
 ```
 
-By defalt the bundle update plugin will use the `ruby:slim` Docker image. But
+By default the bundle update plugin will use the `ruby:slim` Docker image. But
 one can specify a Docker image, this way you can control which version of Ruby
 and Bundler will be used. If your project's gems require specific compile-time
 packages installed you'll need to choose an image that satisfies these
@@ -69,7 +69,7 @@ Bundler can be further configured by setting environment variables it
 understands. For instance, if you need to authenticate to access a private
 RubyGems server at https://rubygems.example.com, you can set your credentials in
 an environment variable named `BUNDLE_RUBYGEMS__EXAMPLE__COM`. (Please use a
-secure mechanisim for setting private environment variables. For instance, the
+secure mechanism for setting private environment variables. For instance, the
 [AWS S3 Secrets Buildkite Plugin].)
 
 If bundle update produces changes to `Gemfile.lock` files, the
@@ -121,6 +121,87 @@ steps:
           pull-request-metadata-key: "github-pull-request-plugin-number"
 ```
 
+## Example Pipeline
+
+This is an example pipeline which ties everything together to produce nicely
+annotated bundle update pull requests.
+
+This pipeline requires two secrets:
+
+* Write access to the project GIT repository, by way of an [SSH Key][Github
+  Deploy Key]. This write access is used for pushing up the bundle update
+  commit.
+
+* Github API access, by populating the environment variable `GITHUB_TOKEN` with
+  a personal access token providing `repo` access to the repository. This is
+  used for opening the pull request and adding comments.
+
+It's recommended to use the [AWS S3 Secrets Buildkite Plugin] to provide these
+secrets. With this you can simply upload the `private_ssh_key` file and
+`environment` file (containing `GITHUB_TOKEN=<secret-value>`) to your S3
+secrets bucket.
+
+```yml
+steps:
+
+  - name: ":bundler: Update"
+    plugins:
+      - envato/bundle-update#v0.6.0:
+          update: true
+          image: "ruby:2.5"
+      - thedyrt/git-commit#v0.3.0:
+          branch: "bundle-update/${BUILDKITE_BUILD_NUMBER}"
+          message: |
+            Bundle update
+
+            ${BUILDKITE_BUILD_URL}
+          create-branch: true
+          user:
+            name: "Bundle Update Bot"
+            email: "bundle-update-bot@example.com"
+      - envato/stop-the-line#v0.1.0:
+          unless:
+            key: "bundle-update-plugin-changes"
+            value: "true"
+          style: "pass"
+
+  - wait
+
+  - label: ":github: Open Pull Request"
+    plugins:
+      - envato/github-pull-request#v0.4.0:
+          head: "bundle-update/${BUILDKITE_BUILD_NUMBER}"
+          title: "Bundle update"
+          body: |
+            Let's upgrade these dependencies for the long-term health and security of the system.
+
+            A slight inconvenience now prevents a severe pain later.
+
+            ([Bundle update #${BUILDKITE_BUILD_NUMBER}](${BUILDKITE_BUILD_URL}))
+          labels: hygiene
+          team-reviewers: a-team
+
+  - wait
+
+  - label: ":writing_hand: Annotate Changes"
+    plugins:
+      - envato/bundle-update#v0.6.0:
+          annotate: true
+          pull-request-metadata-key: github-pull-request-plugin-number
+```
+
+1. Save this file to `.buildkite/pipeline.bundle-upate.yml` and configure a
+   dedicated Buildkite pipeline to load its steps from this location.
+
+2. Configure the private SSH key and Github token as outlined above.
+
+3. Edit the `.buildkite/pipeline.bundle-upate.yml` file to use a Docker image
+   supports your bundle of gems (and tweak the Git commit and pull request
+   message contents to your liking).
+
+4. Then use the Buildkite schedule feature to run the pipeline as often as your
+   team desires.
+
 ## Configuration
 
 ### `update`
@@ -170,6 +251,7 @@ docker-compose run --rm lint
 ```
 
 [unwrappr]: https://github.com/envato/unwrappr
+[Github Deploy Key]: https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys
 [Git Commit Buildkite Plugin]: https://github.com/thedyrt/git-commit-buildkite-plugin
 [Github Pull Request Buildkite Plugin]: https://github.com/envato/github-pull-request-buildkite-plugin
-[AWS S3 Secrets Buildkite Plugin]: https://github.com/buildkite/elastic-ci-stack-s3-secrets-hooks#environment-variables
+[AWS S3 Secrets Buildkite Plugin]: https://github.com/buildkite/elastic-ci-stack-s3-secrets-hooks#uploading-secrets
