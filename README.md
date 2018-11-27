@@ -50,7 +50,7 @@ request with these changes (if your project codebase is hosted on Github):
           body: "[Bundle update #${BUILDKITE_BUILD_NUMBER}](${BUILDKITE_BUILD_URL})"
 ```
 
-By defalt the bundle update plugin will use the `ruby:slim` Docker image. But
+By default the bundle update plugin will use the `ruby:slim` Docker image. But
 one can specify a Docker image, this way you can control which version of Ruby
 and Bundler will be used. If your project's gems require specific compile-time
 packages installed you'll need to choose an image that satisfies these
@@ -69,7 +69,7 @@ Bundler can be further configured by setting environment variables it
 understands. For instance, if you need to authenticate to access a private
 RubyGems server at https://rubygems.example.com, you can set your credentials in
 an environment variable named `BUNDLE_RUBYGEMS__EXAMPLE__COM`. (Please use a
-secure mechanisim for setting private environment variables. For instance, the
+secure mechanism for setting private environment variables. For instance, the
 [AWS S3 Secrets Buildkite Plugin].)
 
 If bundle update produces changes to `Gemfile.lock` files, the
@@ -196,7 +196,7 @@ steps:
 2. Configure the private SSH key and Github token as outlined above.
 
 3. Edit the `.buildkite/pipeline.bundle-upate.yml` file to use a Docker image
-   supports your bundle of gems (and tweek the Git commit and pull request
+   supports your bundle of gems (and tweak the Git commit and pull request
    message contents to your liking).
 
 4. Then use the Buildkite schedule feature to run the pipeline as often as your
