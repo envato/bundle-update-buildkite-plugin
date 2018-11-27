@@ -128,8 +128,9 @@ annotated bundle update pull requests.
 
 This pipeline requires two secrets:
 
-* Write access to the project GIT repository, by way of an SSH Key. This write
-  access is used for pushing up the bundle update commit.
+* Write access to the project GIT repository, by way of an [SSH Key][Github
+  Deploy Key]. This write access is used for pushing up the bundle update
+  commit.
 
 * Github API access, by populating the environment variable `GITHUB_TOKEN` with
   a personal access token providing `repo` access to the repository. This is
@@ -250,6 +251,7 @@ docker-compose run --rm lint
 ```
 
 [unwrappr]: https://github.com/envato/unwrappr
+[Github Deploy Key]: https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys
 [Git Commit Buildkite Plugin]: https://github.com/thedyrt/git-commit-buildkite-plugin
 [Github Pull Request Buildkite Plugin]: https://github.com/envato/github-pull-request-buildkite-plugin
 [AWS S3 Secrets Buildkite Plugin]: https://github.com/buildkite/elastic-ci-stack-s3-secrets-hooks#uploading-secrets
