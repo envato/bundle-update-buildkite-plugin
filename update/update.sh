@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -euox pipefail
 
 # Bundle updating may download gems from git
 # we need to add github.com host key to known_hosts file
