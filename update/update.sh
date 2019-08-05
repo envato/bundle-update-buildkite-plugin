@@ -4,7 +4,7 @@ set -euo pipefail
 cd /bundle_update
 
 if [ -f ".buildkite/scripts/pre-bundle-update" ]; then
-    echo "Installing custom dependencies..."
+    echo ":package: Installing custom dependencies..."
     eval ".buildkite/scripts/pre-bundle-update"
 fi
 
