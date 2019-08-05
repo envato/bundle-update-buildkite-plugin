@@ -20,7 +20,7 @@ else
     pre_bundle_update="./buildkite/scripts/pre-bundle-update"
 fi
 
-eval "./buildkite/scripts/pre-bundle-update"
+eval ".buildkite/scripts/pre-bundle-update"
 # custom defined script
 # run it..
 
