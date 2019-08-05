@@ -25,7 +25,6 @@ fi
 # Dispatch to the command file
 if in_array "UPDATE" "${commands[@]}" ; then
   # shellcheck source=commands/update.sh
-  foo="$(plugin_read_config PRE_BUNDLE_UPDATE)"
   . "$PLUGIN_DIR/commands/update.sh"
 elif in_array "ANNOTATE" "${commands[@]}" ; then
   # shellcheck source=commands/annotate.sh
