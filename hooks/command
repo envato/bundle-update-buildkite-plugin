@@ -29,7 +29,7 @@ if in_array "UPDATE" "${commands[@]}" ; then
   echo "HIIIIII"
   echo $foo
 
-  PRE_BUNDLE_UPDATE="${foo}" eval "$PLUGIN_DIR/commands/update.sh"
+  PRE_BUNDLE_UPDATE="${foo}" . "$PLUGIN_DIR/commands/update.sh"
 elif in_array "ANNOTATE" "${commands[@]}" ; then
   # shellcheck source=commands/annotate.sh
   . "$PLUGIN_DIR/commands/annotate.sh"
