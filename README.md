@@ -137,6 +137,21 @@ steps:
           pull-request-metadata-key: "github-pull-request-plugin-number"
 ```
 
+## Installing Custom Dependencies
+
+When running a bundle update from within a docker container, there may or may not
+be the dependencies you require for the update to complete successfully.
+For example, compiling native extensions or access to a library from another package.
+
+In this case you have 2 options to help solve the problem.
+
+1. Use a docker container which you have prebuilt (or sourced) with all the
+   required dependencies.
+
+2. In the project place a script in the `.buildkite/scripts/pre-bundle-update`.
+   This plugin will look for a script with this name in this location to execute
+   prior to the `bundle update`. Ensure it is executable `chmod +x`.
+
 ## Example Pipeline
 
 This is an example pipeline which ties everything together to produce nicely
