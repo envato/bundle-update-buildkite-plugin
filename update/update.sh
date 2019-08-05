@@ -1,9 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-local var="BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE"
 
-echo "var=${var}"
+echo "file_name=${BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE}"
 
 
 cd /bundle_update
