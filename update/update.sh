@@ -2,7 +2,11 @@
 set -euo pipefail
 
 
-echo "file_name=${BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE}"
+function plugin_read_config() {
+  local var="BUILDKITE_PLUGIN_BUNDLE_UPDATE_${1}"
+  local default="${2:-}"
+  echo "${!var:-$default}"
+}
 
 
 cd /bundle_update
@@ -16,7 +20,7 @@ else
     pre_bundle_update="./buildkite/scripts/pre-bundle-update"
 fi
 
-eval pre_bundle_update
+eval "./buildkite/scripts/pre-bundle-update"
 # custom defined script
 # run it..
 
