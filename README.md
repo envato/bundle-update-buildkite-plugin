@@ -14,7 +14,7 @@ This function runs `bundle update` from within a Docker container.
 steps:
   - label: ":bundler: Update"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           update: true
 ```
 
@@ -27,7 +27,7 @@ we can make use of the [Git Commit Buildkite Plugin].
 steps:
   - label: ":bundler: Update"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           update: true
       - thedyrt/git-commit#v0.3.0:
           branch: "bundle-update/${BUILDKITE_BUILD_NUMBER}"
@@ -60,7 +60,7 @@ constraints also.
 steps:
   - label: ":bundler: Update"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           update: true
           image: "ruby:2.3.7-slim"
 ```
@@ -76,7 +76,7 @@ steps:
       - ecr#v1.1.4:
           login: true
           account_ids: 100000000000
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           update: true
           image: "100000000000.dkr.ecr.us-east-1.amazonaws.com/my-service:latest"
 ```
@@ -105,7 +105,7 @@ This feature is implemented using the [unwrappr] library.
 steps:
   - label: ":rubygems: Annotate Gem Changes"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           annotate: true
           pull-request: 42
 ```
@@ -118,7 +118,7 @@ repository:
 steps:
   - label: ":rubygems: Annotate Gem Changes"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           annotate: true
           pull-request: 42
           repository: "owner/project"
@@ -132,7 +132,7 @@ the [Github Pull Request Buildkite Plugin] saves the PR number with the key
 steps:
   - label: ":rubygems: Annotate Gem Changes"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           annotate: true
           pull-request-metadata-key: "github-pull-request-plugin-number"
 ```
@@ -177,7 +177,7 @@ steps:
 
   - name: ":bundler: Update"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           update: true
           image: "ruby:2.5"
       - thedyrt/git-commit#v0.3.0:
@@ -216,7 +216,7 @@ steps:
 
   - label: ":writing_hand: Annotate Changes"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           annotate: true
           pull-request-metadata-key: github-pull-request-plugin-number
 ```
