@@ -3,7 +3,9 @@ set -euo pipefail
 
 cd /bundle_update
 
-echo "pre_bundle_update=${PRE_BUNDLE_UPDATE}"
+echo "pre_bundle_update=$PRE_BUNDLE_UPDATE"
+
+echo "BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE=$BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE"
 
 if [ -f "$pre_bundle_update" ]; then
     echo "$pre_bundle_update exist"
