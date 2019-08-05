@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PLUGIN_DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)/.."
+local var="BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE"
 
-# shellcheck source=lib/config.sh
-. "$PLUGIN_DIR/lib/config.sh"
+echo "var=${var}"
+
 
 cd /bundle_update
 pre_bundle_update=$(plugin_read_config PRE_BUNDLE_UPDATE)
