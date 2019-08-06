@@ -148,9 +148,17 @@ In this case you have 2 options to help solve the problem.
 1. Use a docker container which you have prebuilt (or sourced) with all the
    required dependencies.
 
-2. In the project place a script in the `.buildkite/scripts/pre-bundle-update`.
-   This plugin will look for a script with this name in this location to execute
-   prior to the `bundle update`. Ensure it is executable `chmod +x`.
+2. You can specify a script location which will be executed prior to running the
+   bundle update. Here you can install and configure the container as needed.
+
+```yml
+steps:
+  - label: ":bundler: Update"
+    plugins:
+      - envato/bundle-update#v0.7.0:
+          update: true
+          pre-bundle-update: .buildkite/scripts/pre-bundle-update
+```
 
 ## Example Pipeline
 

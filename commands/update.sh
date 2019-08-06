@@ -15,6 +15,7 @@ args=(
   "--volume" "$PLUGIN_DIR/update:/update"
   "--workdir" "/bundle_update"
   "--env" "BUNDLE_APP_CONFIG=/bundle_app_config"
+  "--env" "BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE"
 )
 while IFS='=' read -r name _ ; do
   if [[ $name =~ ^BUNDLE_ ]] ; then

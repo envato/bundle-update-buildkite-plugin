@@ -3,9 +3,9 @@ set -euo pipefail
 
 cd /bundle_update
 
-if [ -f ".buildkite/scripts/pre-bundle-update" ]; then
-    echo "Installing custom dependencies..."
-    eval ".buildkite/scripts/pre-bundle-update"
+if [ -f $BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE ]; then
+    echo "Running pre install script..."
+    eval $BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE
 fi
 
 bundle update --jobs="$(nproc)"
