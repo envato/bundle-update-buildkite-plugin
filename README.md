@@ -14,7 +14,7 @@ This function runs `bundle update` from within a Docker container.
 steps:
   - label: ":bundler: Update"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           update: true
 ```
 
@@ -27,7 +27,7 @@ we can make use of the [Git Commit Buildkite Plugin].
 steps:
   - label: ":bundler: Update"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           update: true
       - thedyrt/git-commit#v0.3.0:
           branch: "bundle-update/${BUILDKITE_BUILD_NUMBER}"
@@ -60,7 +60,7 @@ constraints also.
 steps:
   - label: ":bundler: Update"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           update: true
           image: "ruby:2.3.7-slim"
 ```
@@ -76,7 +76,7 @@ steps:
       - ecr#v1.1.4:
           login: true
           account_ids: 100000000000
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           update: true
           image: "100000000000.dkr.ecr.us-east-1.amazonaws.com/my-service:latest"
 ```
@@ -105,7 +105,7 @@ This feature is implemented using the [unwrappr] library.
 steps:
   - label: ":rubygems: Annotate Gem Changes"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           annotate: true
           pull-request: 42
 ```
@@ -118,7 +118,7 @@ repository:
 steps:
   - label: ":rubygems: Annotate Gem Changes"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           annotate: true
           pull-request: 42
           repository: "owner/project"
@@ -132,9 +132,43 @@ the [Github Pull Request Buildkite Plugin] saves the PR number with the key
 steps:
   - label: ":rubygems: Annotate Gem Changes"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           annotate: true
           pull-request-metadata-key: "github-pull-request-plugin-number"
+```
+
+## Installing Custom Dependencies
+
+When running a bundle update from within a docker container, there may or may not
+be the dependencies you require for the update to complete successfully.
+For example, compiling native extensions or access to a library from another package.
+
+In this case you have 2 options to help solve the problem.
+
+1. Use a docker container which you have prebuilt (or sourced) with all the
+   required dependencies.
+
+2. You can specify a script location or shell command which will be executed prior to running the
+   bundle update. Here you can install and configure the container as needed.
+
+```yml
+steps:
+  - label: ":bundler: Update"
+    plugins:
+      - envato/bundle-update#v0.7.0:
+          update: true
+          pre-bundle-update: .buildkite/scripts/pre-bundle-update
+```
+
+or a command
+
+```yml
+steps:
+  - label: ":bundler: Update"
+    plugins:
+      - envato/bundle-update#v0.7.0:
+          update: true
+          pre-bundle-update: "apk add --no-progress build-base"
 ```
 
 ## Example Pipeline
@@ -162,7 +196,7 @@ steps:
 
   - name: ":bundler: Update"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           update: true
           image: "ruby:2.5"
       - thedyrt/git-commit#v0.3.0:
@@ -201,7 +235,7 @@ steps:
 
   - label: ":writing_hand: Annotate Changes"
     plugins:
-      - envato/bundle-update#v0.6.0:
+      - envato/bundle-update#v0.7.0:
           annotate: true
           pull-request-metadata-key: github-pull-request-plugin-number
 ```
@@ -230,6 +264,12 @@ The Docker image to use. Checkout the [official Ruby
 builds](https://hub.docker.com/_/ruby/) at Docker Hub or build your own.
 
 Default: `ruby:slim`
+
+### `pre-bundle-update` (optional, update only)
+
+The script or command to run inside the docker container prior to the bundle update.
+Used to install any dependencies that the bundle update needs if not already in
+the container.
 
 ### `annotate`
 
