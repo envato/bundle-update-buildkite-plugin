@@ -148,7 +148,7 @@ In this case you have 2 options to help solve the problem.
 1. Use a docker container which you have prebuilt (or sourced) with all the
    required dependencies.
 
-2. You can specify a script location which will be executed prior to running the
+2. You can specify a script location or shell command which will be executed prior to running the
    bundle update. Here you can install and configure the container as needed.
 
 ```yml
@@ -158,6 +158,17 @@ steps:
       - envato/bundle-update#v0.7.0:
           update: true
           pre-bundle-update: .buildkite/scripts/pre-bundle-update
+```
+
+or a command
+
+```yml
+steps:
+  - label: ":bundler: Update"
+    plugins:
+      - envato/bundle-update#v0.7.0:
+          update: true
+          pre-bundle-update: "apk add --no-progress build-base"
 ```
 
 ## Example Pipeline
@@ -253,6 +264,12 @@ The Docker image to use. Checkout the [official Ruby
 builds](https://hub.docker.com/_/ruby/) at Docker Hub or build your own.
 
 Default: `ruby:slim`
+
+### `pre-bundle-update` (optional, update only)
+
+The script or command to run inside the docker container prior to the bundle update.
+Used to install any dependencies that the bundle update needs if not already in
+the container.
 
 ### `annotate`
 
