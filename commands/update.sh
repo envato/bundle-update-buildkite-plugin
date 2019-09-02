@@ -5,10 +5,10 @@ image=${BUILDKITE_PLUGIN_BUNDLE_UPDATE_IMAGE:-ruby:slim}
 pre_bundle_update=${BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE:-""}
 post_bundle_update=${BUILDKITE_PLUGIN_BUNDLE_UPDATE_POST_BUNDLE_UPDATE:-""}
 
-echo "--- :docker: Fetching the latest ${image} image"
+echo "~~~ :docker: Fetching the latest ${image} image"
 docker pull "${image}"
 
-echo "+++ :bundler: Running bundle update"
+echo "~~~ :docker: Starting up ${image} container"
 args=(
   "--interactive"
   "--tty"

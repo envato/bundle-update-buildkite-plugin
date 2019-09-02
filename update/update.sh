@@ -3,10 +3,11 @@ set -euo pipefail
 
 cd /bundle_update
 
-echo "Running pre bundle update"
+echo "--- :shell: Running pre bundle update"
 eval "$PRE_BUNDLE_UPDATE"
 
+echo "+++ :bundler: Running bundle update"
 bundle update --jobs="$(nproc)"
 
-echo "Running post bundle update"
+echo "--- :shell: Running post bundle update"
 eval "$POST_BUNDLE_UPDATE"
