@@ -7,6 +7,8 @@ configuration:
   properties:
     image:
       type: string
+    post-bundle-update:
+      type: string
     pre-bundle-update:
       type: string
     pull-request:
@@ -25,5 +27,7 @@ configuration:
       - update
   dependencies:
     image: [ update ]
+    post-bundle-update: [ update ]
+    pre-bundle-update: [ update ]
     pull-request: [ annotate ]
     repository: [ annotate ]

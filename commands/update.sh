@@ -2,13 +2,13 @@
 set -euo pipefail
 
 image=${BUILDKITE_PLUGIN_BUNDLE_UPDATE_IMAGE:-ruby:slim}
+pre_bundle_update=${BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE:-""}
+post_bundle_update=${BUILDKITE_PLUGIN_BUNDLE_UPDATE_POST_BUNDLE_UPDATE:-""}
 
-script=${BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE:-""}
-
-echo "--- :docker: Fetching the latest ${image} image"
+echo "~~~ :docker: Fetching the latest ${image} image"
 docker pull "${image}"
 
-echo "+++ :bundler: Running bundle update"
+echo "~~~ :docker: Starting up ${image} container"
 args=(
   "--interactive"
   "--tty"
@@ -17,7 +17,8 @@ args=(
   "--volume" "$PLUGIN_DIR/update:/update"
   "--workdir" "/bundle_update"
   "--env" "BUNDLE_APP_CONFIG=/bundle_app_config"
-  "--env" "PRE_BUNDLE_UPDATE=${script}"
+  "--env" "PRE_BUNDLE_UPDATE=${pre_bundle_update}"
+  "--env" "POST_BUNDLE_UPDATE=${post_bundle_update}"
 )
 while IFS='=' read -r name _ ; do
   if [[ $name =~ ^BUNDLE_ ]] ; then
