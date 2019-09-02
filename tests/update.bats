@@ -9,11 +9,10 @@ load '/usr/local/lib/bats/load.bash'
 
 @test "Runs the bundle update via Docker" {
   export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
-  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE=""
 
   stub docker \
     "pull ruby:slim : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config --env PRE_BUNDLE_UPDATE= ruby:slim /update/update.sh : echo bundle updated"
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config --env PRE_BUNDLE_UPDATE= --env POST_BUNDLE_UPDATE= ruby:slim /update/update.sh : echo bundle updated"
   stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
   stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
 
@@ -32,7 +31,7 @@ load '/usr/local/lib/bats/load.bash'
 
   stub docker \
     "pull ruby:slim : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config  --env PRE_BUNDLE_UPDATE= ruby:slim /update/update.sh : echo bundle updated"
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config  --env PRE_BUNDLE_UPDATE= --env POST_BUNDLE_UPDATE= ruby:slim /update/update.sh : echo bundle updated"
   stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
   stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
 
@@ -50,7 +49,7 @@ load '/usr/local/lib/bats/load.bash'
 
   stub docker \
     "pull ruby:slim : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config  --env PRE_BUNDLE_UPDATE= ruby:slim /update/update.sh : echo bundle updated"
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config  --env PRE_BUNDLE_UPDATE= --env POST_BUNDLE_UPDATE= ruby:slim /update/update.sh : echo bundle updated"
   stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 0"
   stub buildkite-agent "annotate ':bundler: No gem updates found.' --style info : echo buildkite-annotation-added"
 
@@ -69,7 +68,47 @@ load '/usr/local/lib/bats/load.bash'
 
   stub docker \
     "pull my-image : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config  --env PRE_BUNDLE_UPDATE= my-image /update/update.sh : echo bundle updated"
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config  --env PRE_BUNDLE_UPDATE= --env POST_BUNDLE_UPDATE= my-image /update/update.sh : echo bundle updated"
+  stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
+  stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
+
+  run $PWD/hooks/command
+
+  assert_success
+  assert_output --partial "pulled image"
+  assert_output --partial "bundle updated"
+  unstub docker
+  unstub git
+  unstub buildkite-agent
+}
+
+@test "Passes the pre-bundle-update command" {
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_PRE_BUNDLE_UPDATE=my-pre-bundle-update
+
+  stub docker \
+    "pull ruby:slim : echo pulled image" \
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config --env PRE_BUNDLE_UPDATE=my-pre-bundle-update --env POST_BUNDLE_UPDATE= ruby:slim /update/update.sh : echo bundle updated"
+  stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
+  stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
+
+  run $PWD/hooks/command
+
+  assert_success
+  assert_output --partial "pulled image"
+  assert_output --partial "bundle updated"
+  unstub docker
+  unstub git
+  unstub buildkite-agent
+}
+
+@test "Passes the post-bundle-update command" {
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_POST_BUNDLE_UPDATE=my-post-bundle-update
+
+  stub docker \
+    "pull ruby:slim : echo pulled image" \
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config --env PRE_BUNDLE_UPDATE= --env POST_BUNDLE_UPDATE=my-post-bundle-update ruby:slim /update/update.sh : echo bundle updated"
   stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
   stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
 
@@ -91,7 +130,7 @@ load '/usr/local/lib/bats/load.bash'
 
   stub docker \
     "pull ruby:slim : echo pulled image" \
-    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config --env PRE_BUNDLE_UPDATE= --env BUNDLE_RUBYGEMS__EXAMPLE__COM --env BUNDLE_RUBYGEMS__EXAMPLE__NET ruby:slim /update/update.sh : echo bundle updated"
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/bundle_app_config --env PRE_BUNDLE_UPDATE= --env POST_BUNDLE_UPDATE= --env BUNDLE_RUBYGEMS__EXAMPLE__COM --env BUNDLE_RUBYGEMS__EXAMPLE__NET ruby:slim /update/update.sh : echo bundle updated"
   stub git "diff-index --quiet HEAD -- Gemfile.lock : exit 1"
   stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
 

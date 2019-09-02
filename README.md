@@ -265,6 +265,10 @@ builds](https://hub.docker.com/_/ruby/) at Docker Hub or build your own.
 
 Default: `ruby:slim`
 
+### `post-bundle-update` (optional, update only)
+
+A script or command to run inside the docker container after the bundle update.
+
 ### `pre-bundle-update` (optional, update only)
 
 The script or command to run inside the docker container prior to the bundle update.
