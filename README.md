@@ -240,12 +240,12 @@ steps:
           pull-request-metadata-key: github-pull-request-plugin-number
 ```
 
-1. Save this file to `.buildkite/pipeline.bundle-upate.yml` and configure a
+1. Save this file to `.buildkite/pipeline.bundle-update.yml` and configure a
    dedicated Buildkite pipeline to load its steps from this location.
 
 2. Configure the private SSH key and Github token as outlined above.
 
-3. Edit the `.buildkite/pipeline.bundle-upate.yml` file to use a Docker image
+3. Edit the `.buildkite/pipeline.bundle-update.yml` file to use a Docker image
    supports your bundle of gems (and tweak the Git commit and pull request
    message contents to your liking).
 
