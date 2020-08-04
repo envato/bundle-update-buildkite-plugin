@@ -16,7 +16,7 @@ args=(
   "--volume" "$PWD:/bundle_update"
   "--volume" "$PLUGIN_DIR/update:/update"
   "--workdir" "/bundle_update"
-  "--env" "BUNDLE_APP_CONFIG=/bundle_app_config"
+  "--env" "BUNDLE_APP_CONFIG=/tmp/bundle_app_config"
   "--env" "PRE_BUNDLE_UPDATE=${pre_bundle_update}"
   "--env" "POST_BUNDLE_UPDATE=${post_bundle_update}"
 )
