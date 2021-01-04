@@ -258,7 +258,7 @@ steps:
 
 Instruct the plugin to run `bundle update` on the project.
 
-### `image` (optional, update only)
+### `image` (optional)
 
 The Docker image to use. Checkout the [official Ruby
 builds](https://hub.docker.com/_/ruby/) at Docker Hub or build your own.

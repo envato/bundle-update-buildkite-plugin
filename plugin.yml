@@ -26,7 +26,6 @@ configuration:
     - required:
       - update
   dependencies:
-    image: [ update ]
     post-bundle-update: [ update ]
     pre-bundle-update: [ update ]
     pull-request: [ annotate ]
