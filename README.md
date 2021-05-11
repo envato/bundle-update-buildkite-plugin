@@ -194,7 +194,7 @@ secrets bucket.
 ```yml
 steps:
 
-  - name: ":bundler: Update"
+  - label: ":bundler: Update"
     plugins:
       - envato/bundle-update#v0.9.1:
           update: true
