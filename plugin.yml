@@ -5,6 +5,12 @@ requirements:
   - docker
 configuration:
   properties:
+    env:
+      type: [ string, array ]
+      minimum: 1
+    gemfile-lock-files:
+      type: [ string, array ]
+      minimum: 1
     image:
       type: string
     post-bundle-update:

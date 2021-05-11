@@ -194,7 +194,7 @@ secrets bucket.
 ```yml
 steps:
 
-  - name: ":bundler: Update"
+  - label: ":bundler: Update"
     plugins:
       - envato/bundle-update#v0.9.1:
           update: true
@@ -264,6 +264,29 @@ The Docker image to use. Checkout the [official Ruby
 builds](https://hub.docker.com/_/ruby/) at Docker Hub or build your own.
 
 Default: `ruby:slim`
+
+### `env` (optional, update only)
+
+The environment variables that get passed to the docker container.
+
+```yml
+steps:
+  - name: ":bundler: Update"
+    plugins:
+      - envato/bundle-update#v0.9.1:
+          update: true
+          env:
+            - BUILDKITE_BUILD_NUMBER
+            - MY_CUSTOM_ENV=llamas
+```
+
+Note how the values in the list can either be just a key (so the value is sourced from the environment) or a KEY=VALUE pair.
+
+### `gemfile-lock-files` (optional, update only)
+
+The Gemfile lock files to check for changes post `bundle update`.
+
+Default: `Gemfile.lock`
 
 ### `post-bundle-update` (optional, update only)
 

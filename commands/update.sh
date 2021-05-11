@@ -25,10 +25,21 @@ while IFS='=' read -r name _ ; do
     args+=( "--env" "${name}" )
   fi
 done < <(env | sort)
+
+# append env vars provided in ENV, these are newline delimited
+while IFS=$'\n' read -r env ; do
+  [[ -n "${env:-}" ]] && args+=("--env" "${env}")
+done <<< "$(printf '%s\n' "$(plugin_read_list ENV)")"
+
 docker run "${args[@]}" "${image}" /update/update.sh
 
-if git diff-index --quiet HEAD -- Gemfile.lock; then
-  echo "No updates"
+# check the list of Gemfiles for changes, these are newline delimited
+gemfile_lock_files=()
+while IFS=$'\n' read -r gemfile_lock_file ; do
+  [[ -n "${gemfile_lock_file:-}" ]] && gemfile_lock_files+=("${gemfile_lock_file}")
+done <<< "$(printf '%s\n' "$(plugin_read_list GEMFILE_LOCK_FILES)")"
+
+if git diff-index --quiet HEAD -- "${gemfile_lock_files[@]-Gemfile.lock}"; then
   buildkite-agent annotate ":bundler: No gem updates found." --style info
 else
   buildkite-agent meta-data set bundle-update-plugin-changes true
