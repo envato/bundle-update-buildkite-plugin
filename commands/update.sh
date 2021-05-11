@@ -25,6 +25,12 @@ while IFS='=' read -r name _ ; do
     args+=( "--env" "${name}" )
   fi
 done < <(env | sort)
+
+# append env vars provided in ENV, these are newline delimited
+while IFS=$'\n' read -r env ; do
+  [[ -n "${env:-}" ]] && args+=("--env" "${env}")
+done <<< "$(printf '%s\n' "$(plugin_read_list ENV)")"
+
 docker run "${args[@]}" "${image}" /update/update.sh
 
 if git diff-index --quiet HEAD -- Gemfile.lock; then

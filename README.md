@@ -265,6 +265,23 @@ builds](https://hub.docker.com/_/ruby/) at Docker Hub or build your own.
 
 Default: `ruby:slim`
 
+### `env` (optional, update only)
+
+The environment variables that get passed to the docker container.
+
+```yml
+steps:
+  - name: ":bundler: Update"
+    plugins:
+      - envato/bundle-update#v0.9.1:
+          update: true
+          env:
+            - BUILDKITE_BUILD_NUMBER
+            - MY_CUSTOM_ENV=llamas
+```
+
+Note how the values in the list can either be just a key (so the value is sourced from the environment) or a KEY=VALUE pair.
+
 ### `post-bundle-update` (optional, update only)
 
 A script or command to run inside the docker container after the bundle update.
