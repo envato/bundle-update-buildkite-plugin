@@ -104,3 +104,24 @@ load '/usr/local/lib/bats/load.bash'
   unstub docker
   unstub git
 }
+
+@test "Supports multiple gemfile lock files" {
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_ANNOTATE=true
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_REPOSITORY=envato/ruby-service
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_PULL_REQUEST=42
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_GEMFILE_LOCK_FILES_0=Gemfile.lock
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_GEMFILE_LOCK_FILES_1=Gemfile_v2.lock
+
+  stub docker \
+    "pull ruby : echo pulled image" \
+    "run --interactive --tty --rm --volume /plugin/hooks/../unwrappr:/unwrappr --workdir /annotate --env GITHUB_TOKEN ruby /unwrappr/annotate.sh envato/ruby-service 42 --lock-file Gemfile.lock --lock-file Gemfile_v2.lock : echo pull request annotated"
+  stub git 'remote get-url origin : echo "git@github.com:owner/project"'
+
+  run $PWD/hooks/command
+
+  assert_success
+  assert_output --partial "pulled image"
+  assert_output --partial "pull request annotated"
+  unstub docker
+  unstub git
+}
