@@ -282,6 +282,12 @@ steps:
 
 Note how the values in the list can either be just a key (so the value is sourced from the environment) or a KEY=VALUE pair.
 
+### `gemfile-lock-files` (optional, update only)
+
+The Gemfile lock files to check for changes post `bundle update`.
+
+Default: `Gemfile.lock`
+
 ### `post-bundle-update` (optional, update only)
 
 A script or command to run inside the docker container after the bundle update.

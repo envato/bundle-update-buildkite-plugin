@@ -44,6 +44,25 @@ load '/usr/local/lib/bats/load.bash'
   unstub buildkite-agent
 }
 
+@test "Supports the gemfile-lock-files option" {
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
+  export BUILDKITE_PLUGIN_BUNDLE_UPDATE_GEMFILE_LOCK_FILES=Gemfile_v2.lock
+
+  stub docker \
+    "pull ruby:slim : echo pulled image" \
+    "run --interactive --tty --rm --volume /plugin:/bundle_update --volume /plugin/hooks/../update:/update --workdir /bundle_update --env BUNDLE_APP_CONFIG=/tmp/bundle_app_config  --env PRE_BUNDLE_UPDATE= --env POST_BUNDLE_UPDATE= ruby:slim /update/update.sh : echo bundle updated"
+  stub git "diff-index --quiet HEAD -- Gemfile_v2.lock : exit 1"
+  stub buildkite-agent "meta-data set bundle-update-plugin-changes true : echo meta-data set"
+
+  run $PWD/hooks/command
+
+  assert_success
+  assert_output --partial "meta-data set"
+  unstub docker
+  unstub git
+  unstub buildkite-agent
+}
+
 @test "Adds buildkite annotation, but no metadata, when no changes are found" {
   export BUILDKITE_PLUGIN_BUNDLE_UPDATE_UPDATE=true
 
