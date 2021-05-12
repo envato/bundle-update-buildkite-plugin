@@ -21,4 +21,14 @@ args=(
   "--workdir" "/annotate"
   "--env" "GITHUB_TOKEN"
 )
-docker run "${args[@]}" "${image}" /unwrappr/annotate.sh "${repository}" "${pull_request}"
+
+# check the list of Gemfiles to annotate, these are newline delimited
+gemfile_lock_files=()
+while IFS=$'\n' read -r gemfile_lock_file ; do
+  [[ -n "${gemfile_lock_file:-}" ]] && gemfile_lock_files+=("--lock-file" "${gemfile_lock_file}")
+done <<< "$(printf '%s\n' "$(plugin_read_list GEMFILE_LOCK_FILES)")"
+
+docker run "${args[@]}" "${image}" /unwrappr/annotate.sh \
+  "${repository}" \
+  "${pull_request}" \
+  "${gemfile_lock_files[@]-}"

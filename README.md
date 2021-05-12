@@ -265,6 +265,23 @@ builds](https://hub.docker.com/_/ruby/) at Docker Hub or build your own.
 
 Default: `ruby:slim`
 
+### `gemfile-lock-files` (optional)
+
+The Gemfile lock files to check for changes post `bundle update` or to annotate.
+
+Default: `Gemfile.lock`
+
+```yml
+steps:
+  - name: ":bundler: Update"
+    plugins:
+      - envato/bundle-update#v0.9.1:
+          update: true
+          gemfile-lock-files:
+            - Gemfile.lock
+            - Gemfile_next.lock
+```
+
 ### `env` (optional, update only)
 
 The environment variables that get passed to the docker container.
@@ -281,12 +298,6 @@ steps:
 ```
 
 Note how the values in the list can either be just a key (so the value is sourced from the environment) or a KEY=VALUE pair.
-
-### `gemfile-lock-files` (optional, update only)
-
-The Gemfile lock files to check for changes post `bundle update`.
-
-Default: `Gemfile.lock`
 
 ### `post-bundle-update` (optional, update only)
 
