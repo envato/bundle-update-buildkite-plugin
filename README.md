@@ -2,6 +2,8 @@
 
 [![tests](https://github.com/envato/bundle-update-buildkite-plugin/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/envato/bundle-update-buildkite-plugin/actions/workflows/tests.yml)
 
+[![MIT License](https://img.shields.io/badge/License-MIT-brightgreen.svg)](LICENSE)
+
 A [Buildkite plugin](https://buildkite.com/docs/agent/v3/plugins) that updates
 gem dependencies in your Ruby projects by running `bundle update`.
 
